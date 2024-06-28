@@ -24,21 +24,16 @@ $router->get('/api/documentation', function () {
 });
 
 // routes/web.php
-$router->get('/login', 'AuthController@redirectToProvider');
-$router->get('/callback', 'AuthController@handleProviderCallback');
+//$router->get('/login', 'AuthController@redirectToProvider');
+//$router->get('/callback', 'AuthController@handleProviderCallback');
 
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->post('/users/register', 'AuthController@register');
+    $router->post('/users/login', 'AuthController@login');
+    $router->post('/users/logout', 'AuthController@logout');
 
-//Ejemplo de lo que actualmente se envia para el "restore"
-$router->get('/project/{id}', 'ProjectController@show');
+    $router->post('/users/refresh', 'AuthController@refreshToken');
+    $router->get('/users/me', 'AuthController@me');
+});
 
 $router->post('/role','RoleController@createRole');
-
-
-//RUTAS PROTEGIDAS
-$router->group( ['middleware' => 'auth'], function () use ($router) {
-
-    $router->get('/rutatest', function () use ($router) {
-        return $router->app->version();
-    });
-
-});

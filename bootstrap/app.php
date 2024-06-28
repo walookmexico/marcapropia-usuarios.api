@@ -77,7 +77,7 @@ $app->configure('app');
 // ]);
 
  $app->routeMiddleware([
-    'auth' => App\Http\Middleware\Authenticate::class,
+    //'auth' => App\Http\Middleware\Authenticate::class,
     //'permission' => App\Http\Middleware\PermissionMiddleware::class, // cloned from Spatie\Permission\Middleware
     //'role'       => App\Http\Middleware\RoleMiddleware::class,  // cloned from Spatie\Permission\Middleware
  ]);
@@ -103,6 +103,10 @@ $app->register(Spatie\Permission\PermissionServiceProvider::class);
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+
+
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+//$app->register(Tymon\JWTAuth\Providers\LaravelServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
