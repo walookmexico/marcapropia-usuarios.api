@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasCustomTimestampsTrait;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -9,10 +10,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
+class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
-    use Authenticatable, Authorizable, HasFactory, HasRoles;
+    use Authenticatable, Authorizable, HasFactory, HasRoles, HasCustomTimestampsTrait;
 
     protected $guard_name = 'api';
 
@@ -22,7 +24,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email',
+        'name', 'email', 'password'
     ];
 
     /**
@@ -33,4 +35,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+    /**
+     * @inheritDoc
+     */
+    public function getJWTCustomClaims() {
+        return [];
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public function getJWTIdentifier() {
+        return $this->getKey();
+    }
 }
