@@ -1,0 +1,151 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger API",
+        "description": "Swagger OpenApi description",
+        "contact": {
+            "email": "jborges@walook.com.mx"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/users/oauth/authorize": {
+            "get": {
+                "summary": "Redirect to OAuth Provider",
+                "operationId": "797efdffee8720c3f58771e6e8186197",
+                "responses": {
+                    "302": {
+                        "description": "Redirect to OAuth Provider"
+                    }
+                }
+            }
+        },
+        "/api/users/oauth/callback": {
+            "get": {
+                "summary": "Handle OAuth Callback",
+                "operationId": "9decefc620349d12a3a4ab9ef2fef1f0",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OAuth Token Response"
+                    }
+                }
+            }
+        },
+        "/api/users/register": {
+            "post": {
+                "summary": "Register a new user",
+                "operationId": "13565b949a19a5836c3fe9f30a37dbc6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully"
+                    }
+                }
+            }
+        },
+        "/api/users/login": {
+            "post": {
+                "summary": "Log in with credentials",
+                "operationId": "b5c0481a14cf25e2840c6c9dd1e4f3d0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully"
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/users/logout": {
+            "post": {
+                "summary": "Log out user",
+                "operationId": "c3a125fe0fc085e4b3567e954639d4a0",
+                "responses": {
+                    "200": {
+                        "description": "User logged out successfully"
+                    }
+                }
+            }
+        },
+        "/api/users/me": {
+            "get": {
+                "summary": "Get current user information",
+                "operationId": "023eae4c11807c8d3edd0903770b1e64",
+                "responses": {
+                    "200": {
+                        "description": "User obtained"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/api/users/refresh": {
+            "get": {
+                "summary": "Refresh JWT Token",
+                "operationId": "b421d2970fffdb62dfb438c4471e88be",
+                "responses": {
+                    "200": {
+                        "description": "Token refreshed successfully"
+                    }
+                }
+            }
+        }
+    }
+}
