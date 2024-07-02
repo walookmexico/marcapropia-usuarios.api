@@ -15,7 +15,7 @@ abstract class AbstractBaseService{
      *
      * @return void
      */
-    private function __construct() {}
+    protected function __construct() {}
 
     /**
      * Get instance
@@ -29,4 +29,11 @@ abstract class AbstractBaseService{
 
         return static::$_instance;
     }
+
+    /**
+     * Deshabilita la clonación de la instancia.
+     */
+    private function __clone() {}
+
+    public function __wakeup() {}
 }

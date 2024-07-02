@@ -2,89 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Http\Requests\RegisterUserRequest;
+use App\Services\Impl\UserServiceImpl;
 use App\Traits\HttpResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
 use Laravel\Lumen\Routing\Controller as BaseController;
-use GuzzleHttp\Client;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Facades\Log;
 
 class AuthController extends BaseController
 {
-
     use HttpResponseTrait;
 
-    protected $clientId;
-    protected $clientSecret;
-    protected $redirectUri;
-    protected $authority = 'https://login.microsoftonline.com';
-    protected $tenant;
-    public function __construct()
-{
-    $this->clientId = env('CLIENT_ID');
-    $this->clientSecret = env('CLIENT_SECRET');
-    $this->redirectUri = env('REDIRECT_URI');
-    $this->tenant = env('TENANT_ID');
-}
+    protected $userService;
 
-    public function redirectToProvider()
-    {
-        $authorizationUrl = "{$this->authority}/{$this->tenant}/oauth2/v2.0/authorize?" . http_build_query([
-            'client_id' => $this->clientId,
-            'response_type' => 'code',
-            'redirect_uri' => $this->redirectUri,
-            'response_mode' => 'query',
-            'scope' => 'openid profile email offline_access user.read',
-        ]);
-
-        return redirect($authorizationUrl);
+    /**
+     * AuthController constructor.
+     */
+    public function __construct(){
+        $this->userService = UserServiceImpl::getInstance();
     }
 
-    public function handleProviderCallback(Request $request)
-    {
-        $code = $request->input('code');
-
-        if (!$code) {
-            return response()->json(['error' => 'Authorization code not found'], 400);
-        }
-
-        $tokenUrl = "{$this->authority}/{$this->tenant}/oauth2/v2.0/token";
-
-        $http = new Client;
-
-        $response = $http->post($tokenUrl, [
-            'form_params' => [
-                'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret,
-                'code' => $code,
-                'redirect_uri' => $this->redirectUri,
-                'grant_type' => 'authorization_code',
-            ],
-        ]);
-
-        $tokens = json_decode((string) $response->getBody(), true);
-
-        // Manejar los tokens como sea necesario, p.ej., almacenar en la base de datos, establecer en sesión, etc.
-        return response()->json($tokens);
-    }
-
+    /**
+     * @OA\Post(
+     *     path="/api/users/register",
+     *     summary="Register a new user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="password", type="string", format="password")
+     *             @OA\Property(property="password_confirmation", type="string", format="password")
+     *         )
+     *     ),
+     *     @OA\Response(response="201", description="User created successfully")
+     * )
+     */
     public function register(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+        $registerUserRequest = new RegisterUserRequest();
+        $registerUserRequest->validate($request);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => app('hash')->make($request->password),
-        ]);
-
+        $user = $this->userService->registerUser($request->all());
+       
         $token = JWTAuth::fromUser($user);
         $expiresIn = auth('api')->factory()->getTTL() * 60;
         $refreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user); 
@@ -99,6 +60,21 @@ class AuthController extends BaseController
         ], Response::HTTP_CREATED);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/users/login",
+     *     summary="Log in with credentials",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="password", type="string", format="password")
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="User logged in successfully"),
+     *     @OA\Response(response="401", description="Invalid credentials")
+     * )
+     */
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -120,12 +96,27 @@ class AuthController extends BaseController
             ]);      
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/users/logout",
+     *     summary="Log out user",
+     *     @OA\Response(response="200", description="User logged out successfully")
+     * )
+     */
     public function logout(){
         JWTAuth::parseToken()->authenticate();
         JWTAuth::invalidate(JWTAuth::getToken());
         return $this->success("User logged out successfully", []);     
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/users/me",
+     *     summary="Get current user information",
+     *     @OA\Response(response="200", description="User obtained"),
+     *     @OA\Response(response="404", description="User not found")
+     * )
+     */
     public function me() {
         if (!$user = JWTAuth::parseToken()->authenticate()) {
             return $this->error('User not found', [], Response::HTTP_NOT_FOUND);
@@ -134,6 +125,13 @@ class AuthController extends BaseController
         return $this->success("User obtained", ['user' => $user]);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/users/refresh",
+     *     summary="Refresh JWT Token",
+     *     @OA\Response(response="200", description="Token refreshed successfully")
+     * )
+     */
     public function refreshToken(){ 
 
         $user = JWTAuth::parseToken()->authenticate();

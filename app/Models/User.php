@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasCustomTimestampsTrait;
+use Faker\Provider\en_AU\PhoneNumber;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -17,6 +18,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     use Authenticatable, Authorizable, HasFactory, HasRoles, HasCustomTimestampsTrait;
 
     protected $guard_name = 'api';
+    protected $table = "users";
+
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +28,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email', 'password'
+        'name', 'email', 'password', 'user_type'
     ];
 
     /**
@@ -47,5 +51,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function getJWTIdentifier() {
         return $this->getKey();
+    }
+
+    public function externalUserDetail(){
+        return $this->hasOne(ExternalUserDetail::class, 'user_id', 'id');
+    }
+
+    public function internalUserDetail(){
+        return $this->hasOne(InternalUserDetail::class, 'user_id', 'id');
+    }
+
+    public function phones(){
+        return $this->hasMany(Phone::class, 'user_id', 'id');
     }
 }

@@ -20,7 +20,7 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/api/documentation', function () {
-    return view('vendor.l5-swagger.index');
+    return view('vendor.swagger-lume');
 });
 
 // routes/web.php
