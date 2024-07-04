@@ -84,6 +84,10 @@ class AuthController extends BaseController
         }
 
         $user = JWTAuth::user();
+        if(!$user->active){
+            return $this->error('User is deactivated', [], Response::HTTP_FORBIDDEN);
+        }
+
         $refreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user);
         $expiresIn = auth('api')->factory()->getTTL() * 60;
 

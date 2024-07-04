@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProjectController;
-
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 /*
@@ -34,6 +32,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/users/refresh', 'AuthController@refreshToken');
     $router->get('/users/me', 'AuthController@me');
+
+
+    $router->get('/roles', 'RoleController@getAllRole');
+    $router->get('/roles/{id}', 'RoleController@getRole');
+    $router->post('/roles', 'RoleController@createRole');
+    $router->put('/roles/{id}', 'RoleController@updateRole');
+    $router->delete('/roles/{id}', 'RoleController@deactivateRole');
+    $router->patch('/roles/{id}', 'RoleController@activateRole');
 });
 
-$router->post('/role','RoleController@createRole');
+

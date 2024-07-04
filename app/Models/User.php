@@ -17,10 +17,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable, HasFactory, HasRoles, HasCustomTimestampsTrait;
 
-    protected $guard_name = 'api';
     protected $table = "users";
-
     protected $primaryKey = 'id';
+    protected $guard_name = 'api';
+    protected $dates = ['deleted_at'];
+    protected $casts = [
+        'active' => 'boolean',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -28,7 +31,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email', 'password', 'user_type'
+        'name', 'email', 'password', 'user_type', 'active'
     ];
 
     /**

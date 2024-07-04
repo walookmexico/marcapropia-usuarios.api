@@ -1,15 +1,14 @@
 <?php
 
 namespace App\Services;
+use App\Models\User;
 
 /**
  * Summary of UserService
  */
 interface UserServiceInterface{
-    /**
-     * Summary of createUser
-     * @param mixed $name
-     * @return void
-     */
-    public function registerUser(array $data);
+   
+    
+    public function registerUser(array $data) : User;
+    
 }

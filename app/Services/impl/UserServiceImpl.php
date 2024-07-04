@@ -4,6 +4,7 @@ namespace App\Services\Impl;
 
 use App\Models\User;
 use App\Services\Impl\AbstractBaseService;
+use App\Services\Impl\RoleServiceImpl;
 use App\Services\UserServiceInterface;
 use App\Utils\UserConstants;
 use Illuminate\Support\Facades\DB;
@@ -11,10 +12,16 @@ use Illuminate\Support\Facades\Log;
 
 class UserServiceImpl extends AbstractBaseService implements UserServiceInterface{
 
+    protected $roleService;
+
+    public function __construct(){
+        $this->roleService = RoleServiceImpl::getInstance();
+    }
+
     /**
      * @inheritDoc
      */
-    public function registerUser(array $data) {
+    public function registerUser(array $data) : User{
         try {
             DB::beginTransaction();
 
@@ -32,7 +39,7 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
         }
     }
 
-    private function getUserType(string $email){
+    private function getUserType(string $email) : string{
         $userType = UserConstants::EXTERNAL_USER_TYPE; 
         $internalDomains = explode(',', env('INTERNAL_EMAIL_DOMAINS', ''));
         foreach ($internalDomains as $domain) {
@@ -45,7 +52,7 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
         return $userType;
     }
 
-    private function createUser(array $data){
+    private function createUser(array $data) : User{
         $email = $data['email'];
         $fullName = $data['fullName'];
         $pass = $data['password'];
@@ -62,7 +69,7 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
         return $user;
     }
 
-    private function createPhoneIfNeccesary(array $data, User $user){
+    private function createPhoneIfNeccesary(array $data, User $user) : void{
         if(isset($data['phone']) && isset($data['areaCode'])){
             $phoneNumber = $data['phone'];
             $areaCode = $data['areaCode'];
@@ -74,20 +81,23 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
         }
     }
 
-    private function createUserByType(array $data, User $user){
+    private function createUserByType(array $data, User $user) : void{
         $email = $data['email'];
         $userType = $this->getUserType($email);
 
         if ($userType == UserConstants::INTERNAL_USER_TYPE) {
             $job = $data['job'];
-            $employeeCode = $data['employeeCode'];
+            $role = $this->roleService->getRoleById($job);
+            $user->assignRole($role);
 
+            $employeeCode = $data['employeeCode'];
             $user->internalUserDetail()->create([
                 'employee_code' => $employeeCode
             ]);
         }else{
             $companyName = $data['company'];
             $externalUserType = $data['userType'];
+            
             $user->externalUserDetail()->create([ 
                 'company_name' => $companyName, 
                 'external_user_type_id' => $externalUserType

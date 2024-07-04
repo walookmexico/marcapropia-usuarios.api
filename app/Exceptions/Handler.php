@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
+use Spatie\Permission\Exceptions\RoleAlreadyExists;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -85,6 +86,10 @@ class Handler extends ExceptionHandler
 
         if ($exception instanceof \ErrorException) {
             return $this->error('An unexpected error occurred on the server. Please try again later or contact support if the problem persists.', [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        if ($exception instanceof RoleAlreadyExists) {
+            return $this->error('The role already exists', [], Response::HTTP_FORBIDDEN);
         }
 
         return parent::render($request, $exception);
