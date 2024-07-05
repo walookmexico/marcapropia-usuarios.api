@@ -40,6 +40,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->put('/roles/{id}', 'RoleController@updateRole');
     $router->delete('/roles/{id}', 'RoleController@deactivateRole');
     $router->patch('/roles/{id}', 'RoleController@activateRole');
+
+    $router->get('/external-user-types', 'ExternalUserTypeController@getAllExternalUserType');
+    $router->get('/external-user-types/{id}', 'ExternalUserTypeController@getExternalUserType');
+    $router->post('/external-user-types', 'ExternalUserTypeController@createExternalUserType');
+    $router->put('/external-user-types/{id}', 'ExternalUserTypeController@updateExternalUserType');
+    $router->delete('/external-user-types/{id}', 'ExternalUserTypeController@deactivateExternalUserType');
+    $router->patch('/external-user-types/{id}', 'ExternalUserTypeController@activateExternalUserType');
 });
 
 

@@ -4,16 +4,20 @@ namespace App\Models;
 
 use App\Traits\HasCustomTimestampsTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ExternalUserType extends Model{
 
-    use HasCustomTimestampsTrait;
+    use SoftDeletes, HasCustomTimestampsTrait;
 
     protected $table = "external_user_types";
     protected $primaryKey = "id";
-
+    protected $dates = ['deleted_at'];
+    protected $casts = [
+        'active' => 'boolean',
+    ];
     protected $fillable = [
-        'name'
+        'name', 'active'
     ];
 
     public function externalUserDetails(){
