@@ -49,9 +49,13 @@ class RoleController extends Controller{
     }
 
     public function updateRole(Request $request, $id){
-        UpdateRoleRequest::validate($request, $id);
-        $role = $this->roleService->updateRole($id, $request->all());
-        return $this->success('Role updated successfully', ['role' => $role]);
+        try {
+            UpdateRoleRequest::validate($request, $id);
+            $role = $this->roleService->updateRole($id, $request->all());
+            return $this->success('Role updated successfully', ['role' => $role]);
+        } catch (ModelNotFoundException $e) {
+            return $this->error('Role not found', [], Response::HTTP_NOT_FOUND);
+        }
     }
 
     public function deactivateRole($id){

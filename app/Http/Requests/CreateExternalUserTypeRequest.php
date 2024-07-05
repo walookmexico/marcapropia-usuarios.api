@@ -6,11 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class CreateRoleRequest{
+class CreateExternalUserTypeRequest{
     public static function validate(Request $request){
         $rules = [
-            'name' => 'required|max:100|unique:roles',
-            'description' => 'required|max:200',
+            'name' => 'required|max:100|unique:external_user_types',
         ];
 
         $validator = Validator::make($request->all(), $rules);
