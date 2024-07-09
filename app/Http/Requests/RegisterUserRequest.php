@@ -12,7 +12,14 @@ class RegisterUserRequest
     public function validate(Request $request){
         $rules = [
             'fullName' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'
+            ],
             'password' => [ 
                 'required',
                 'string',
@@ -21,12 +28,12 @@ class RegisterUserRequest
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,12}$/',
                 'confirmed'
             ],
-            'areaCode' => ['sometimes', 'required', 'string', 'max: 10'],
-            'phone' => ['nullable', 'string', 'max: 25'],
+            'areaCode' => ['sometimes', 'required', 'string', 'max: 5'],
+            'phone' => ['nullable', 'string', 'max: 10'],
             'job' => ['sometimes', 'required', 'integer', 'exists:roles,id'],
             'employeeCode' => ['sometimes', 'required', 'string', 'max: 25'],
             'company' => ['sometimes', 'required', 'string', 'max: 200'],
-            'userType' => ['sometimes', 'required', 'integer']
+            'userType' => ['sometimes', 'required', 'integer','exists:external_user_types,id']
         ];
 
         $validator = Validator::make($request->all(), $rules);

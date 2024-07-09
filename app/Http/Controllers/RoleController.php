@@ -11,7 +11,6 @@ use App\Traits\HttpResponseTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller{
 
@@ -43,7 +42,6 @@ class RoleController extends Controller{
             $role = $this->roleService->getRoleById($id);
             return $this->success('Role retrieved successfully', ['role' => $role]);
         } catch (ModelNotFoundException $e) {
-            Log::error($e->getMessage());
             return $this->error('Role not found', [], Response::HTTP_NOT_FOUND);
         }
     }

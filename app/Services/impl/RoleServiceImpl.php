@@ -62,7 +62,7 @@ class RoleServiceImpl extends AbstractBaseService implements RoleServiceInterfac
         try {
             DB::beginTransaction();
 
-            $role = Role::withTrashed()->findOrFail($id);
+            $role = $this->getRoleById($id);
             $role->active = UserConstants::ACTIVE_STATUS;
             $role->save();
             $role->restore();

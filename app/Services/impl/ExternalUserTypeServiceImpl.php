@@ -26,14 +26,14 @@ class ExternalUserTypeServiceImpl extends AbstractBaseService implements Externa
     }
 
     public function updateExternalUserType(int $id, array $data): ExternalUserType {
-        $ExternalUserType = $this->getExternalUserTypeById($id);
+        $externalUserType = $this->getExternalUserTypeById($id);
         
         $name = $data["name"];
 
-        $ExternalUserType->update([
+        $externalUserType->update([
             'name' => $name
         ]);
-        return $ExternalUserType;
+        return $externalUserType;
     }
 
     public function deactivateExternalUserType(int $id): void {
@@ -41,10 +41,10 @@ class ExternalUserTypeServiceImpl extends AbstractBaseService implements Externa
         try {
             DB::beginTransaction();
 
-            $ExternalUserType = $this->getExternalUserTypeById($id);
-            $ExternalUserType->active = UserConstants::INACTIVE_STATUS;
-            $ExternalUserType->save();
-            $ExternalUserType->delete();
+            $externalUserType = $this->getExternalUserTypeById($id);
+            $externalUserType->active = UserConstants::INACTIVE_STATUS;
+            $externalUserType->save();
+            $externalUserType->delete();
 
             DB::commit();
         } catch (\Exception $e) {
@@ -58,10 +58,10 @@ class ExternalUserTypeServiceImpl extends AbstractBaseService implements Externa
         try {
             DB::beginTransaction();
 
-            $ExternalUserType = ExternalUserType::withTrashed()->findOrFail($id);
-            $ExternalUserType->active = UserConstants::ACTIVE_STATUS;
-            $ExternalUserType->save();
-            $ExternalUserType->restore();
+            $externalUserType = $this->getExternalUserTypeById($id);
+            $externalUserType->active = UserConstants::ACTIVE_STATUS;
+            $externalUserType->save();
+            $externalUserType->restore();
            
             DB::commit();
         } catch (\Exception $e) {

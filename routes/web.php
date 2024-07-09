@@ -26,12 +26,19 @@ $router->get('/api/documentation', function () {
 //$router->get('/callback', 'AuthController@handleProviderCallback');
 
 $router->group(['prefix' => 'api'], function () use ($router) {
+    $router->get('/users', 'AuthController@getAllUser');
+    $router->get('/users/me', 'AuthController@me');
+    $router->get('/users/{id}', 'AuthController@getUser');
     $router->post('/users/register', 'AuthController@register');
+    $router->put('/users/{id}', 'AuthController@updateUser');
+    $router->delete('/users/{id}', 'AuthController@deactivateUser');
+    $router->patch('/users/{id}', 'AuthController@activateUser');
+
     $router->post('/users/login', 'AuthController@login');
     $router->post('/users/logout', 'AuthController@logout');
 
     $router->post('/users/refresh', 'AuthController@refreshToken');
-    $router->get('/users/me', 'AuthController@me');
+ 
 
 
     $router->get('/roles', 'RoleController@getAllRole');
