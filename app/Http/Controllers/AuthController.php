@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\UserActivatedException;
+use App\Exceptions\UserDeactivatedException;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Services\Impl\UserServiceImpl;
 use App\Traits\HttpResponseTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -152,4 +156,66 @@ class AuthController extends BaseController
                 'token_type' => 'bearer',
             ]);
     }
+
+    public function getUser($id){
+        try {
+            $user = $this->userService->getUserWithAllRelationsById($id);
+            return $this->success('User retrieved successfully', ['user' => $user]);
+        } catch (ModelNotFoundException $e) {
+            return $this->error('User not found', [], Response::HTTP_NOT_FOUND);
+        }
+    }
+    public function getAllUser(Request $request){
+        $perPage = $request->input('per_page', 10);
+        $searchBy = $request->input('searchBy', 'name');
+        $search = $request->input('search');
+        $sortBy = $request->input('sort_by', 'id');
+        $sortDirection = $request->input('sort_direction', 'asc');
+        $userPaginated = $this->userService->getUsersPaginated($perPage, $searchBy, $search, $sortBy, $sortDirection);
+        return $this->success('Users retrieved (with pagination) successfully', ['pagination' => $userPaginated]);
+    }
+
+
+    public function updateUser(Request $request, $id){
+        try {
+            UpdateUserRequest::validate($request, $id);
+            $user = $this->userService->updateUser($id, $request->all());
+            return $this->success('User updated successfully', ['user' => $user]);
+        } catch (ModelNotFoundException $e) {
+            return $this->error('User not found', [], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function deactivateUser($id){
+        try {
+            $user = $this->userService->getUserById($id);
+            if(!$user->active){
+                throw new UserDeactivatedException();
+            }
+
+            $this->userService->deactivateUser($id);
+            return $this->success('User deactivated successfully');
+        } catch (ModelNotFoundException $e) {
+            return $this->error('User not found', [], Response::HTTP_NOT_FOUND);
+        } catch (UserDeactivatedException $e) {
+            return $this->error('User is deactivated', [], Response::HTTP_CONFLICT);
+        }
+    }
+
+    public function activateUser($id){
+        try {
+            $user = $this->userService->getUserById($id);
+            if($user->active){
+                throw new UserActivatedException();
+            }
+
+            $this->userService->activateUser($id);
+            
+            return $this->success('User activated successfully');
+        } catch (ModelNotFoundException $e) {
+            return $this->error('User not found', [], Response::HTTP_NOT_FOUND);
+        } catch (UserActivatedException $e) {
+            return $this->error('User is activated', [], Response::HTTP_CONFLICT);
+        }
+    } 
 }
