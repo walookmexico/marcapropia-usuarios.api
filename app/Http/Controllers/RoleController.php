@@ -24,7 +24,7 @@ class RoleController extends Controller{
     public function createRole(Request $request){
         CreateRoleRequest::validate($request);
         $role = $this->roleService->createRole($request->all());
-        return $this->success('Role created successfully', ['role' => $role], Response::HTTP_CREATED);
+        return $this->success(trans('role.role_created'), ['role' => $role], Response::HTTP_CREATED);
     }
 
     public function getAllRole(Request $request){
@@ -34,15 +34,15 @@ class RoleController extends Controller{
         $sortBy = $request->input('sort_by', 'id');
         $sortDirection = $request->input('sort_direction', 'asc');
         $rolePaginated = $this->roleService->getRolesPaginated($perPage, $searchBy, $search, $sortBy, $sortDirection);
-        return $this->success('Roles retrieved (with pagination) successfully', ['pagination' => $rolePaginated]);
+        return $this->success(trans('role.roles_retrieved'), ['pagination' => $rolePaginated]);
     }
 
     public function getRole($id){
         try {
             $role = $this->roleService->getRoleById($id);
-            return $this->success('Role retrieved successfully', ['role' => $role]);
+            return $this->success(trans('role.role_retrieved'), ['role' => $role]);
         } catch (ModelNotFoundException $e) {
-            return $this->error('Role not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('role.role_not_found'), [], Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -50,9 +50,9 @@ class RoleController extends Controller{
         try {
             UpdateRoleRequest::validate($request, $id);
             $role = $this->roleService->updateRole($id, $request->all());
-            return $this->success('Role updated successfully', ['role' => $role]);
+            return $this->success(trans('role.role_updated'), ['role' => $role]);
         } catch (ModelNotFoundException $e) {
-            return $this->error('Role not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('role.role_not_found'), [], Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -64,11 +64,11 @@ class RoleController extends Controller{
             }
 
             $this->roleService->deactivateRole($id);
-            return $this->success('Role deactivated successfully');
+            return $this->success(trans('role.role_deactivated'));
         } catch (ModelNotFoundException $e) {
-            return $this->error('Role not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('role.role_not_found'), [], Response::HTTP_NOT_FOUND);
         } catch (RoleDeactivatedException $e) {
-            return $this->error('Role is deactivated', [], Response::HTTP_CONFLICT);
+            return $this->error(trans('role.role_already_deactivated'), [], Response::HTTP_CONFLICT);
         }
     }
 
@@ -81,11 +81,11 @@ class RoleController extends Controller{
 
             $this->roleService->activateRole($id);
             
-            return $this->success('Role activated successfully');
+            return $this->success(trans('role.role_activated'));
         } catch (ModelNotFoundException $e) {
-            return $this->error('Role not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('role.role_not_found'), [], Response::HTTP_NOT_FOUND);
         } catch (RoleActivatedException $e) {
-            return $this->error('Role is activated', [], Response::HTTP_CONFLICT);
+            return $this->error(trans('role.role_already_activated'), [], Response::HTTP_CONFLICT);
         }
     }
 }

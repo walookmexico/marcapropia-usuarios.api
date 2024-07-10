@@ -25,7 +25,7 @@ class ExternalUserTypeController extends Controller{
     public function createExternalUserType(Request $request){
         CreateExternalUserTypeRequest::validate($request);
         $externalUserType = $this->externalUserTypeService->createExternalUserType($request->all());
-        return $this->success('External user type created successfully', ['externalUserType' => $externalUserType], Response::HTTP_CREATED);
+        return $this->success(trans('external_user_type.external_user_type_created'), ['externalUserType' => $externalUserType], Response::HTTP_CREATED);
     }
 
     public function getAllExternalUserType(Request $request){
@@ -35,16 +35,16 @@ class ExternalUserTypeController extends Controller{
         $sortBy = $request->input('sort_by', 'id');
         $sortDirection = $request->input('sort_direction', 'asc');
         $externalUserTypePaginated = $this->externalUserTypeService->getExternalUserTypesPaginated($perPage, $searchBy, $search, $sortBy, $sortDirection);
-        return $this->success('External user types retrieved (with pagination) successfully', ['pagination' => $externalUserTypePaginated]);
+        return $this->success(trans('external_user_type.external_user_types_retrieved'), ['pagination' => $externalUserTypePaginated]);
     }
 
     public function getExternalUserType($id){
         try {
             $externalUserType = $this->externalUserTypeService->getExternalUserTypeById($id);
-            return $this->success('External user type retrieved successfully', ['externalUserType' => $externalUserType]);
+            return $this->success(trans('external_user_type.external_user_type_retrieved'), ['externalUserType' => $externalUserType]);
         } catch (ModelNotFoundException $e) {
             Log::error($e->getMessage());
-            return $this->error('External user type not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('external_user_type.external_user_type_not_found'), [], Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -52,9 +52,9 @@ class ExternalUserTypeController extends Controller{
         try {
             UpdateExternalUserTypeRequest::validate($request, $id);
             $externalUserType = $this->externalUserTypeService->updateExternalUserType($id, $request->all());
-            return $this->success('External user type updated successfully', ['externalUserType' => $externalUserType]);
+            return $this->success(trans('external_user_type.external_user_type_updated'), ['externalUserType' => $externalUserType]);
         } catch (ModelNotFoundException $e) {
-            return $this->error('External user type not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('external_user_type.external_user_type_not_found'), [], Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -66,11 +66,11 @@ class ExternalUserTypeController extends Controller{
             }
 
             $this->externalUserTypeService->deactivateExternalUserType($id);
-            return $this->success('External user type deactivated successfully');
+            return $this->success(trans('external_user_type.external_user_type_deactivated'));
         } catch (ModelNotFoundException $e) {
-            return $this->error('External user type not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('external_user_type.external_user_type_not_found'), [], Response::HTTP_NOT_FOUND);
         } catch (ExternalUserTypeDeactivatedException $e) {
-            return $this->error('External user type is deactivated', [], Response::HTTP_CONFLICT);
+            return $this->error(trans('external_user_type.external_user_type_already_deactivated'), [], Response::HTTP_CONFLICT);
         }
     }
 
@@ -83,11 +83,11 @@ class ExternalUserTypeController extends Controller{
 
             $this->externalUserTypeService->activateExternalUserType($id);
             
-            return $this->success('External user type activated successfully');
+            return $this->success(trans('external_user_type.external_user_type_activated'));
         } catch (ModelNotFoundException $e) {
-            return $this->error('External user type not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('external_user_type.external_user_type_not_found'), [], Response::HTTP_NOT_FOUND);
         } catch (ExternalUserTypeActivatedException $e) {
-            return $this->error('External user type is activated', [], Response::HTTP_CONFLICT);
+            return $this->error(trans('external_user_type.external_user_type_already_activated'), [], Response::HTTP_CONFLICT);
         }
     }
 }

@@ -77,6 +77,7 @@ $app->configure('app');
 // ]);
 
  $app->routeMiddleware([
+    'setlocale' => App\Http\Middleware\SetLocaleMiddleware::class,
     //'auth' => App\Http\Middleware\Authenticate::class,
     //'permission' => App\Http\Middleware\PermissionMiddleware::class, // cloned from Spatie\Permission\Middleware
     //'role'       => App\Http\Middleware\RoleMiddleware::class,  // cloned from Spatie\Permission\Middleware
