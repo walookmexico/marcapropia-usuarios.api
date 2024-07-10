@@ -25,7 +25,7 @@ $router->get('/api/documentation', function () {
 //$router->get('/login', 'AuthController@redirectToProvider');
 //$router->get('/callback', 'AuthController@handleProviderCallback');
 
-$router->group(['prefix' => 'api'], function () use ($router) {
+$router->group(['prefix' => 'api', 'middleware' => 'setlocale'], function () use ($router) {
     $router->get('/users', 'AuthController@getAllUser');
     $router->get('/users/me', 'AuthController@me');
     $router->get('/users/{id}', 'AuthController@getUser');

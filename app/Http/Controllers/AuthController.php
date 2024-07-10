@@ -54,7 +54,7 @@ class AuthController extends BaseController
         $expiresIn = auth('api')->factory()->getTTL() * 60;
         $refreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user); 
 
-        return $this->success("User created succesfully", 
+        return $this->success(trans('user.user_created'), 
         [
             'refresh_token' => $refreshToken,
             'token' => $token, 
@@ -84,18 +84,18 @@ class AuthController extends BaseController
         $credentials = $request->only('email', 'password');
 
         if (!$token = JWTAuth::attempt($credentials)) {
-            return $this->error('Invalid credentials', [], Response::HTTP_UNAUTHORIZED);
+            return $this->error(trans('user.invalid_credentials'), [], Response::HTTP_UNAUTHORIZED);
         }
 
         $user = JWTAuth::user();
         if(!$user->active){
-            return $this->error('User is deactivated', [], Response::HTTP_FORBIDDEN);
+            return $this->error(trans('user.user_already_deactivated'), [], Response::HTTP_FORBIDDEN);
         }
 
         $refreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user);
         $expiresIn = auth('api')->factory()->getTTL() * 60;
 
-        return $this->success("User logged in successfully", 
+        return $this->success(trans('user.user_logged_in'), 
             [
                 'refresh_token' => $refreshToken,
                 'token' => $token, 
@@ -114,7 +114,7 @@ class AuthController extends BaseController
     public function logout(){
         JWTAuth::parseToken()->authenticate();
         JWTAuth::invalidate(JWTAuth::getToken());
-        return $this->success("User logged out successfully", []);     
+        return $this->success(trans('user.user_logged_out'), []);     
     }
 
     /**
@@ -127,10 +127,10 @@ class AuthController extends BaseController
      */
     public function me() {
         if (!$user = JWTAuth::parseToken()->authenticate()) {
-            return $this->error('User not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('user.user_not_found'), [], Response::HTTP_NOT_FOUND);
         }
 
-        return $this->success("User obtained", ['user' => $user]);
+        return $this->success(trans('user.user_obtained'), ['user' => $user]);
     }
 
     /**
@@ -148,7 +148,7 @@ class AuthController extends BaseController
         $newRefreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user);
         $newExpiresIn = auth('api')->factory()->getTTL() * 60;
 
-        return $this->success("Token refreshed successfully", 
+        return $this->success(trans('token.token_refreshed'), 
             [
                 'refresh_token' => $newRefreshToken,
                 'token' => $newToken, 
@@ -160,9 +160,9 @@ class AuthController extends BaseController
     public function getUser($id){
         try {
             $user = $this->userService->getUserWithAllRelationsById($id);
-            return $this->success('User retrieved successfully', ['user' => $user]);
+            return $this->success(trans('user.user_retrieved'), ['user' => $user]);
         } catch (ModelNotFoundException $e) {
-            return $this->error('User not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('user.user_not_found'), [], Response::HTTP_NOT_FOUND);
         }
     }
     public function getAllUser(Request $request){
@@ -172,7 +172,7 @@ class AuthController extends BaseController
         $sortBy = $request->input('sort_by', 'id');
         $sortDirection = $request->input('sort_direction', 'asc');
         $userPaginated = $this->userService->getUsersPaginated($perPage, $searchBy, $search, $sortBy, $sortDirection);
-        return $this->success('Users retrieved (with pagination) successfully', ['pagination' => $userPaginated]);
+        return $this->success(trans('user.users_retrieved'), ['pagination' => $userPaginated]);
     }
 
 
@@ -180,9 +180,9 @@ class AuthController extends BaseController
         try {
             UpdateUserRequest::validate($request, $id);
             $user = $this->userService->updateUser($id, $request->all());
-            return $this->success('User updated successfully', ['user' => $user]);
+            return $this->success(trans('user.user_updated'), ['user' => $user]);
         } catch (ModelNotFoundException $e) {
-            return $this->error('User not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('user.user_not_found'), [], Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -194,11 +194,11 @@ class AuthController extends BaseController
             }
 
             $this->userService->deactivateUser($id);
-            return $this->success('User deactivated successfully');
+            return $this->success(trans('user.user_deactivated'));
         } catch (ModelNotFoundException $e) {
-            return $this->error('User not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('user.user_not_found'), [], Response::HTTP_NOT_FOUND);
         } catch (UserDeactivatedException $e) {
-            return $this->error('User is deactivated', [], Response::HTTP_CONFLICT);
+            return $this->error(trans('user.user_already_deactivated'), [], Response::HTTP_CONFLICT);
         }
     }
 
@@ -211,11 +211,11 @@ class AuthController extends BaseController
 
             $this->userService->activateUser($id);
             
-            return $this->success('User activated successfully');
+            return $this->success(trans('user.user_activated'));
         } catch (ModelNotFoundException $e) {
-            return $this->error('User not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('user.user_not_found'), [], Response::HTTP_NOT_FOUND);
         } catch (UserActivatedException $e) {
-            return $this->error('User is activated', [], Response::HTTP_CONFLICT);
+            return $this->error(trans('user.user_already_activated'), [], Response::HTTP_CONFLICT);
         }
     } 
 }
