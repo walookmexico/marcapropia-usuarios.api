@@ -21,7 +21,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $table = "users";
     protected $primaryKey = 'id';
     protected $guard_name = 'api';
-    protected $dates = ['deleted_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $casts = [
         'active' => 'boolean',
     ];
@@ -49,7 +49,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getJWTCustomClaims() {
         return [];
     }
-    
+
     /**
      * @inheritDoc
      */

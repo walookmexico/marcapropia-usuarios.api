@@ -6,21 +6,17 @@ use App\Traits\HasCustomTimestampsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ExternalUserType extends Model{
+class Area extends Model{
 
     use SoftDeletes, HasCustomTimestampsTrait;
 
-    protected $table = "external_user_types";
-    protected $primaryKey = "id";
+    protected $table = "areas";
+    protected $primaryKey = 'id';
+    protected $guard_name = 'api';
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $casts = [
         'active' => 'boolean',
     ];
-    protected $fillable = [
-        'name', 'active'
-    ];
-
-    public function externalUserDetails(){
-        return $this->hasMany(ExternalUserDetail::class, 'external_user_type_id', 'id');
-    }
+    protected $fillable = ['name', 'description', 'active'];
+    protected $hidden = [];
 }

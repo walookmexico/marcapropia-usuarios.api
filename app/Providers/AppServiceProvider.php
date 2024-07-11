@@ -18,6 +18,6 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         // Configura el formato de fecha global para toda la aplicación
-        DB::statement("SET DateFormat 'Y-m-d H:i:s.u';");
+        DB::connection()->getPdo()->exec("SET LANGUAGE us_english");
     }
 }

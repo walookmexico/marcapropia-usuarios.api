@@ -33,14 +33,10 @@ $router->group(['prefix' => 'api', 'middleware' => 'setlocale'], function () use
     $router->put('/users/{id}', 'AuthController@updateUser');
     $router->delete('/users/{id}', 'AuthController@deactivateUser');
     $router->patch('/users/{id}', 'AuthController@activateUser');
-
     $router->post('/users/login', 'AuthController@login');
     $router->post('/users/logout', 'AuthController@logout');
-
     $router->post('/users/refresh', 'AuthController@refreshToken');
- 
-
-
+    
     $router->get('/roles', 'RoleController@getAllRole');
     $router->get('/roles/{id}', 'RoleController@getRole');
     $router->post('/roles', 'RoleController@createRole');
@@ -54,6 +50,9 @@ $router->group(['prefix' => 'api', 'middleware' => 'setlocale'], function () use
     $router->put('/external-user-types/{id}', 'ExternalUserTypeController@updateExternalUserType');
     $router->delete('/external-user-types/{id}', 'ExternalUserTypeController@deactivateExternalUserType');
     $router->patch('/external-user-types/{id}', 'ExternalUserTypeController@activateExternalUserType');
+
+    $router->get('/areas', 'AreaController@getAllArea');
+    $router->get('/areas/{id}', 'AreaController@getArea');
 });
 
 

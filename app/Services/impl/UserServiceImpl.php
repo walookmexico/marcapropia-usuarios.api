@@ -29,7 +29,7 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
             $user = $this->createUser($data);
             $this->createPhoneIfNeccesary($data, $user);
             $this->createUserByType($data, $user);
-        
+
             DB::commit();
 
             return $user;
@@ -41,7 +41,7 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
     }
 
     private function getUserType(string $email) : string{
-        $userType = UserConstants::EXTERNAL_USER_TYPE; 
+        $userType = UserConstants::EXTERNAL_USER_TYPE;
         $internalDomains = explode(',', env('INTERNAL_EMAIL_DOMAINS', ''));
         foreach ($internalDomains as $domain) {
             if (str_ends_with($email, $domain)) {
@@ -58,7 +58,7 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
         $fullName = $data['fullName'];
         $pass = $data['password'];
         $userType = $this->getUserType($email);
-    
+
         $user = User::create([
             'name' => $fullName,
             'email' => $email,
@@ -76,7 +76,7 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
             $areaCode = $data['areaCode'];
 
             $user->phones()->create([
-                'phone' => $phoneNumber, 
+                'phone' => $phoneNumber,
                 'area_code' => $areaCode
             ]);
         }
@@ -98,9 +98,9 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
         }else{
             $companyName = $data['company'];
             $externalUserType = $data['userType'];
-            
-            $user->externalUserDetail()->create([ 
-                'company_name' => $companyName, 
+
+            $user->externalUserDetail()->create([
+                'company_name' => $companyName,
                 'external_user_type_id' => $externalUserType
             ]);
         }
@@ -132,12 +132,12 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
             DB::beginTransaction();
 
             $user = $this->getUserById($id);
-        
+
             if(isset($data['name'])){
                 $name = $data["name"];
                 $user->name = $name;
             }
-            
+
             if(isset($data["password"])){
                 $pass = $data["password"];
                 $user->password = app('hash')->make($pass);
@@ -154,7 +154,7 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
             }
 
             $user->save();
-        
+
             DB::commit();
 
             return $user;
@@ -191,7 +191,7 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
             $user->active = UserConstants::ACTIVE_STATUS;
             $user->save();
             $user->restore();
-           
+
             DB::commit();
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -200,9 +200,11 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
         }
     }
 
-    public function getUsersPaginated(int $perPage = 10, string $searchBy = null, string $search = null, 
+    public function getUsersPaginated(int $perPage = 10, string $searchBy = null, string $search = null,
         string $sortBy = 'email', string $sortDirection = 'asc') : LengthAwarePaginator{
         $query = User::query();
+        $query->withTrashed();
+
         $query->with(['phones' => function($query) {
             $query->select('area_code', 'phone', 'user_id'); // Especifica los campos que deseas obtener
         }])
@@ -234,7 +236,7 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
             $areaCode = $data['areaCode'];
 
             $user->phones()->update([
-                'phone' => $phoneNumber, 
+                'phone' => $phoneNumber,
                 'area_code' => $areaCode
             ]);
         }
@@ -258,17 +260,17 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
     }
     private function updateCompanyNameIfNecessary(array $data, User $user) : void {
         if(isset($data['company'])) {
-            $companyName = $data['company'];    
-            $user->externalUserDetail()->update([ 
-                'company_name' => $companyName, 
+            $companyName = $data['company'];
+            $user->externalUserDetail()->update([
+                'company_name' => $companyName,
             ]);
         }
     }
 
     private function updateUserTypeIfNecessary(array $data, User $user) : void {
         if(isset($data['userType'])) {
-            $externalUserType = $data['userType'];   
-            $user->externalUserDetail()->update([ 
+            $externalUserType = $data['userType'];
+            $user->externalUserDetail()->update([
                 'external_user_type_id' => $externalUserType
             ]);
         }
