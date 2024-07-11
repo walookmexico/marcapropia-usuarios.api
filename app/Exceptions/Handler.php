@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
+use PDOException;
 use Spatie\Permission\Exceptions\RoleAlreadyExists;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -66,7 +67,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof MethodNotAllowedHttpException) {
             return $this->error(trans('exception.method_not_allowed'), [], Response::HTTP_METHOD_NOT_ALLOWED);
         }
-        
+
         if ($exception instanceof ValidationException) {
             $errors = $exception->validator->errors()->getMessages();
             return $this->error(trans('exception.validation_error'), ['errors' => $errors], Response::HTTP_BAD_REQUEST);
@@ -85,6 +86,10 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof \ErrorException) {
+            return $this->error(trans('exception.unexpected_error'), [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        if ($exception instanceof PDOException) {
             return $this->error(trans('exception.unexpected_error'), [], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

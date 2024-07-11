@@ -21,13 +21,14 @@ class ExternalUserTypeServiceImpl extends AbstractBaseService implements Externa
         $name = $data["name"];
 
         return ExternalUserType::create([
-            'name' => $name
+            'name' => $name,
+            'active' => UserConstants::ACTIVE_STATUS
         ]);
     }
 
     public function updateExternalUserType(int $id, array $data): ExternalUserType {
         $externalUserType = $this->getExternalUserTypeById($id);
-        
+
         $name = $data["name"];
 
         $externalUserType->update([
@@ -62,7 +63,7 @@ class ExternalUserTypeServiceImpl extends AbstractBaseService implements Externa
             $externalUserType->active = UserConstants::ACTIVE_STATUS;
             $externalUserType->save();
             $externalUserType->restore();
-           
+
             DB::commit();
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -71,9 +72,10 @@ class ExternalUserTypeServiceImpl extends AbstractBaseService implements Externa
         }
     }
 
-    public function getExternalUserTypesPaginated(int $perPage = 10, string $searchBy = null, string $search = null, 
+    public function getExternalUserTypesPaginated(int $perPage = 10, string $searchBy = null, string $search = null,
         string $sortBy = 'name', string $sortDirection = 'asc') : LengthAwarePaginator{
         $query = ExternalUserType::query();
+        $query->withTrashed();
 
         // Aplicar filtros si existe la búsqueda
         if ($searchBy && $search) {

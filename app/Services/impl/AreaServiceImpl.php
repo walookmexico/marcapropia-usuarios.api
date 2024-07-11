@@ -2,54 +2,54 @@
 
 namespace App\Services\Impl;
 
-use App\Models\Role;
+use App\Models\Area;
 use App\Services\Impl\AbstractBaseService;
-use App\Services\RoleServiceInterface;
+use App\Services\AreaServiceInterface;
 use App\Utils\UserConstants;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class RoleServiceImpl extends AbstractBaseService implements RoleServiceInterface{
+class AreaServiceImpl extends AbstractBaseService implements AreaServiceInterface{
 
 
-    public function getRoleById(int $id): Role {
-        return Role::withTrashed()->findOrFail($id);
+    public function getAreaById(int $id): Area {
+        return Area::withTrashed()->findOrFail($id);
     }
 
-    public function createRole(array $data): Role {
+    public function createArea(array $data): Area {
         $name = $data["name"];
         $description = $data["description"];
 
-        return Role::create([
+        return Area::create([
             'name' => $name,
             'description' => $description,
             'active' => UserConstants::ACTIVE_STATUS
         ]);
     }
 
-    public function updateRole(int $id, array $data): Role {
-        $role = $this->getRoleById($id);
+    public function updateArea(int $id, array $data): Area {
+        $area = $this->getAreaById($id);
 
         $name = $data["name"];
         $description = $data["description"];
 
-        $role->update([
+        $area->update([
             'name' => $name,
             'description' => $description,
         ]);
-        return $role;
+        return $area;
     }
 
-    public function deactivateRole(int $id): void {
+    public function deactivateArea(int $id): void {
 
         try {
             DB::beginTransaction();
 
-            $role = $this->getRoleById($id);
-            $role->active = UserConstants::INACTIVE_STATUS;
-            $role->save();
-            $role->delete();
+            $area = $this->getAreaById($id);
+            $area->active = UserConstants::INACTIVE_STATUS;
+            $area->save();
+            $area->delete();
 
             DB::commit();
         } catch (\Exception $e) {
@@ -59,14 +59,14 @@ class RoleServiceImpl extends AbstractBaseService implements RoleServiceInterfac
         }
     }
 
-    public function activateRole(int $id): void {
+    public function activateArea(int $id): void {
         try {
             DB::beginTransaction();
 
-            $role = $this->getRoleById($id);
-            $role->active = UserConstants::ACTIVE_STATUS;
-            $role->save();
-            $role->restore();
+            $area = $this->getAreaById($id);
+            $area->active = UserConstants::ACTIVE_STATUS;
+            $area->save();
+            $area->restore();
 
             DB::commit();
         } catch (\Exception $e) {
@@ -76,9 +76,9 @@ class RoleServiceImpl extends AbstractBaseService implements RoleServiceInterfac
         }
     }
 
-    public function getRolesPaginated(int $perPage = 10, string $searchBy = null, string $search = null,
+    public function getAreasPaginated(int $perPage = 10, string $searchBy = null, string $search = null,
         string $sortBy = 'name', string $sortDirection = 'asc') : LengthAwarePaginator{
-        $query = Role::query();
+        $query = Area::query();
         $query->withTrashed();
 
         // Aplicar filtros si existe la búsqueda
@@ -90,7 +90,7 @@ class RoleServiceImpl extends AbstractBaseService implements RoleServiceInterfac
         // Aplicar ordenamiento
         $query->orderBy($sortBy, $sortDirection);
 
-        // Obtener roles paginados
+        // Obtener areas paginados
         return $query->paginate($perPage);
     }
 }

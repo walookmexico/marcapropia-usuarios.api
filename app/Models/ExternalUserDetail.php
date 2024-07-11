@@ -16,6 +16,7 @@ class ExternalUserDetail extends Model{
     protected $fillable = [
         'company_name', 'external_user_type_id'
     ];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     public function user(){
         return $this->belongsTo(User::class, 'user_id', 'id');

@@ -13,10 +13,10 @@ class Role extends SpatieRole{
     protected $table = "roles";
     protected $primaryKey = 'id';
     protected $guard_name = 'api';
-    protected $dates = ['deleted_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $casts = [
         'active' => 'boolean',
     ];
-    protected $fillable = ['name', 'description', 'active', 'guard_name'];   
+    protected $fillable = ['name', 'description', 'active', 'guard_name'];
     protected $hidden = ['guard_name'];
 }
