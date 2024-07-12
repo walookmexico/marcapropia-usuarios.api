@@ -131,27 +131,27 @@ return [
 
     'custom' => [
         'job' => [
-            'required_if_internal_domain' => 'El campo job es obligatorio cuando el correo electrónico termina con un dominio interno.',
+            'required_if_internal_domain' => 'El campo :attribute es obligatorio cuando el correo electrónico termina con un dominio interno.',
         ],
         'email' => [
             'prohibited_domain' => 'Los correos electrónicos de los dominios :domains no están permitidos.',
         ],
         'phone' => [
-            'required_if_area_code' => 'El campo phone es obligatorio cuando se proporciona un código de área.',
-            'max_length' => 'El campo phone debe ser una cadena con una longitud máxima de :max caracteres.',
+            'required_if_area_code' => 'El campo :attribute es obligatorio cuando se proporciona un código de área.',
+            'max_length' => 'El campo :attribute debe ser una cadena con una longitud máxima de :max caracteres.',
         ],
         'areaCode' => [
-            'required_if_phone' => 'El campo area code es obligatorio cuando se proporciona un número de teléfono.',
-            'max_length' => 'El campo area code debe ser una cadena con una longitud máxima de :max caracteres.',
+            'required_if_phone' => 'El campo :attribute es obligatorio cuando se proporciona un número de teléfono.',
+            'max_length' => 'El campo :attribute debe ser una cadena con una longitud máxima de :max caracteres.',
         ],
         'userType' => [
-            'required_if_external_user' => 'The user type field is required when the email does not end with an internal domain.',
+            'required_if_external_user' => 'El campo :attribute es obligatorio cuando el correo electrónico no termina con un dominio interno.',
         ],
         'employeeCode' => [
-            'required_if_internal_user' => 'The employee code field is required when the email ends with an internal domain.',
+            'required_if_internal_user' => 'El campo :attribute es obligatorio cuando el correo electrónico termina con un dominio interno.',
         ],
         'company' => [
-            'required_if_external_user' => 'The company field is required when the email does not end with an internal domain.',
+            'required_if_external_user' => 'El campo :attribute es obligatorio cuando el correo electrónico no termina con un dominio interno.',
         ],
     ],
 
@@ -166,6 +166,19 @@ return [
     |
     */
 
-    'attributes' => [],
-
+    'attributes' => [
+        'name' => 'nombre',
+        'description' => 'descripción',
+        'area_id' => 'identificador de área',
+        'active' => 'activo',
+        'fullName' => 'nombre completo',
+        'email' => 'correo electrónico',
+        'password' => 'contraseña',
+        'areaCode' => 'código de área',
+        'phone' => 'número de teléfono',
+        'job' => 'puesto',
+        'employeeCode' => 'código de empleado',
+        'company' => 'empresa',
+        'userType' => 'tipo de usuario'
+    ],
 ];
