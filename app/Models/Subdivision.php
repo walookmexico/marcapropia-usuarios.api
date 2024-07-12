@@ -6,11 +6,11 @@ use App\Traits\HasCustomTimestampsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Area extends Model{
+class Subdivision extends Model{
 
     use SoftDeletes, HasCustomTimestampsTrait;
 
-    protected $table = "areas";
+    protected $table = "subdivisions";
     protected $primaryKey = 'id';
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $casts = [
@@ -19,7 +19,7 @@ class Area extends Model{
     protected $fillable = ['name', 'description', 'active'];
     protected $hidden = [];
 
-    public function subdivisions(){
-        return $this->hasMany(Subdivision::class, 'area_id', 'id');
+    public function area(){
+        return $this->belongsTo(Area::class, 'area_id', 'id');
     }
 }
