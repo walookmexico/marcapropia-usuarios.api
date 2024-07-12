@@ -10,5 +10,5 @@ return [
     'area_already_deactivated' => 'El área ya está desactivada',
     'area_already_activated' => 'El área ya está activada',
     'area_retrieved' => 'Área recuperada correctamente',
-    'areas_retrieved' => 'Areas recuperadas (con paginación) correctamente',
+    'areas_retrieved' => 'Áreas recuperadas (con paginación) correctamente',
 ];

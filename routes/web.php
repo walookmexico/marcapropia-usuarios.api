@@ -36,7 +36,7 @@ $router->group(['prefix' => 'api', 'middleware' => 'setlocale'], function () use
     $router->post('/users/login', 'AuthController@login');
     $router->post('/users/logout', 'AuthController@logout');
     $router->post('/users/refresh', 'AuthController@refreshToken');
-    
+
     $router->get('/roles', 'RoleController@getAllRole');
     $router->get('/roles/{id}', 'RoleController@getRole');
     $router->post('/roles', 'RoleController@createRole');
@@ -53,6 +53,9 @@ $router->group(['prefix' => 'api', 'middleware' => 'setlocale'], function () use
 
     $router->get('/areas', 'AreaController@getAllArea');
     $router->get('/areas/{id}', 'AreaController@getArea');
+
+    $router->get('/subdivisions', 'SubdivisionController@getAllSubdivision');
+    $router->get('/subdivisions/{id}', 'SubdivisionController@getSubdivision');
 });
 
 

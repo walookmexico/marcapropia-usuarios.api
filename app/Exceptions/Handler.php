@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use PDOException;
+use ErrorException;
 use Spatie\Permission\Exceptions\RoleAlreadyExists;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -85,7 +86,7 @@ class Handler extends ExceptionHandler
             return $this->error(trans('token.token_absent'), [], Response::HTTP_UNAUTHORIZED);
         }
 
-        if ($exception instanceof \ErrorException) {
+        if ($exception instanceof ErrorException) {
             return $this->error(trans('exception.unexpected_error'), [], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
