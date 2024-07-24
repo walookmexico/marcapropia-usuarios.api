@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Swagger API",
-        "description": "Swagger OpenApi description",
+        "title": "API de Gestión de accesos y usuarios",
+        "description": "API para la gestión de accesos y usuarios, que permite crear, modificar y eliminar cuentas de usuario, así como gestionar roles y permisos de seguridad",
         "contact": {
             "email": "jborges@walook.com.mx"
         },
@@ -18,29 +18,361 @@
         }
     ],
     "paths": {
+        "/api/areas": {
+            "get": {
+                "tags": [
+                    "areas"
+                ],
+                "summary": "Obtiene una lista paginada de áreas",
+                "operationId": "areas-all-retrieved",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Número de áreas por página.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "searchBy",
+                        "in": "query",
+                        "description": "Campo por el que se realizará la búsqueda (por ejemplo, 'name' o 'id').",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "name"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Texto de búsqueda.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Marketing"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "Campo por el que se realizará la ordenación (por ejemplo, 'name' o 'id').",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "name"
+                        }
+                    },
+                    {
+                        "name": "sortDirection",
+                        "in": "query",
+                        "description": "Dirección de la ordenación, puede ser 'asc' o 'desc'.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Áreas recuperadas (con paginación) correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Area"
+                                                    }
+                                                },
+                                                "first_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/areas?page=1"
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "last_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/areas?page=10"
+                                                },
+                                                "link": {
+                                                    "description": "Pagination links including previous, next, and page numbers",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url": {
+                                                                "description": "URL for the link",
+                                                                "type": "string",
+                                                                "format": "uri",
+                                                                "example": "http://example.com/api/areas?page=1"
+                                                            },
+                                                            "label": {
+                                                                "description": "Label for the link, e.g., page number or a special label",
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "active": {
+                                                                "description": "Whether the link is active for the current page",
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/areas?page=2"
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/areas"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Áreas recuperadas (con paginación) correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/areas/{id}": {
+            "get": {
+                "tags": [
+                    "areas"
+                ],
+                "summary": "Obtiene un área",
+                "operationId": "areas-retrieved",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Área recuperada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "area": {
+                                                    "$ref": "#/components/schemas/Area"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Área recuperada correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Área no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Área no encontrada"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/users/register": {
             "post": {
-                "summary": "Register a new user",
-                "operationId": "13565b949a19a5836c3fe9f30a37dbc6",
+                "tags": [
+                    "usuarios"
+                ],
+                "summary": "Registra un usuario",
+                "operationId": "users-register",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "name": {
-                                        "type": "string"
+                                    "fullName": {
+                                        "type": "string",
+                                        "example": "Juan Borges"
                                     },
                                     "email": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "jborges@soriana.com"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "format": "password"
+                                        "example": "Wlk12345678"
                                     },
                                     "password_confirmation": {
                                         "type": "string",
-                                        "format": "password"
+                                        "format": "password",
+                                        "example": "Wlk12345678"
+                                    },
+                                    "company": {
+                                        "type": "string",
+                                        "example": "Walook"
+                                    },
+                                    "userType": {
+                                        "type": "integer",
+                                        "example": 50
+                                    },
+                                    "areaCode": {
+                                        "type": "string",
+                                        "example": null,
+                                        "nullable": true
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "12"
+                                    },
+                                    "job": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "employeeCode": {
+                                        "type": "string",
+                                        "example": "12345"
                                     }
                                 },
                                 "type": "object"
@@ -50,15 +382,122 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "User created successfully"
+                        "description": "Usuario creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "refresh_token": {
+                                                    "type": "string",
+                                                    "example": "refreh_token"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "token"
+                                                },
+                                                "expires_in": {
+                                                    "type": "integer",
+                                                    "example": 3600
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "bearer"
+                                                },
+                                                "user": {
+                                                    "$ref": "#/components/schemas/User"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Usuario creado correctamente"
+                                                },
+                                                "code": {
+                                                    "type": "integer",
+                                                    "example": 201
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error en los campos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "errors": {
+                                                    "type": "object"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Error en los campos"
+                                                },
+                                                "code": {
+                                                    "type": "integer",
+                                                    "example": 400
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
         "/api/users/login": {
             "post": {
-                "summary": "Log in with credentials",
-                "operationId": "b5c0481a14cf25e2840c6c9dd1e4f3d0",
+                "tags": [
+                    "usuarios"
+                ],
+                "summary": "Inicia sesión del usuario",
+                "operationId": "users-login",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -66,11 +505,13 @@
                             "schema": {
                                 "properties": {
                                     "email": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Juan Borges"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "format": "password"
+                                        "format": "password",
+                                        "example": "Wlk12345678"
                                     }
                                 },
                                 "type": "object"
@@ -80,48 +521,2524 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "User logged in successfully"
+                        "description": "Usuario ha iniciado sesión correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "refresh_token": {
+                                                    "type": "string",
+                                                    "example": "refreh_token"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "token"
+                                                },
+                                                "expires_in": {
+                                                    "type": "integer",
+                                                    "example": 3600
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "bearer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario ha iniciado sesión correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Invalid credentials"
+                        "description": "Credenciales inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Credenciales inválidas"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 401
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
         "/api/users/logout": {
             "post": {
-                "summary": "Log out user",
-                "operationId": "c3a125fe0fc085e4b3567e954639d4a0",
+                "tags": [
+                    "usuarios"
+                ],
+                "summary": "Cierra sesión del usuario",
+                "operationId": "users-logout",
                 "responses": {
                     "200": {
-                        "description": "User logged out successfully"
+                        "description": "Usuario ha cerrado sesión correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario ha cerrado sesión correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token expirado/Token inválido/Token no presente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token expirado/Token inválido/Token no presente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 401
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
         "/api/users/me": {
             "get": {
-                "summary": "Get current user information",
-                "operationId": "023eae4c11807c8d3edd0903770b1e64",
+                "tags": [
+                    "usuarios"
+                ],
+                "summary": "Obtiene un usuario mediante el token",
+                "operationId": "users-me",
                 "responses": {
                     "200": {
-                        "description": "User obtained"
+                        "description": "Usuario recuperado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/User"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario obtenido correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token expirado/Token inválido/Token no presente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token expirado/Token inválido/Token no presente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 401
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "User not found"
+                        "description": "Usuario no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario no encontrado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
         "/api/users/refresh": {
             "get": {
-                "summary": "Refresh JWT Token",
-                "operationId": "b421d2970fffdb62dfb438c4471e88be",
+                "tags": [
+                    "usuarios"
+                ],
+                "summary": "Refresca el token del usuario",
+                "operationId": "users-refresh",
                 "responses": {
                     "200": {
-                        "description": "Token refreshed successfully"
+                        "description": "Token refrescado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "refresh_token": {
+                                                    "type": "string"
+                                                },
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "expires_in": {
+                                                    "type": "integer"
+                                                },
+                                                "token_type": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token refrescado correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token expirado/Token inválido/Token no presente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token expirado/Token inválido/Token no presente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 401
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
+            }
+        },
+        "/api/external-user-types": {
+            "get": {
+                "tags": [
+                    "tipos-usuarios-externos"
+                ],
+                "summary": "Obtiene una lista paginada de tipos de usuarios externos",
+                "operationId": "external-user-types-all-retrieved",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Número de tipos de usuarios externos por página.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "searchBy",
+                        "in": "query",
+                        "description": "Campo por el que se realizará la búsqueda (por ejemplo, 'name' o 'id').",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "name"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Texto de búsqueda.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Proveedor"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "Campo por el que se realizará la ordenación (por ejemplo, 'name' o 'id').",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "name"
+                        }
+                    },
+                    {
+                        "name": "sortDirection",
+                        "in": "query",
+                        "description": "Dirección de la ordenación, puede ser 'asc' o 'desc'.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tipos de usuarios externos recuperados (con paginación) correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/ExternalUserType"
+                                                    }
+                                                },
+                                                "first_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/external-user-types?page=1"
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "last_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/external-user-types?page=10"
+                                                },
+                                                "link": {
+                                                    "description": "Pagination links including previous, next, and page numbers",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url": {
+                                                                "description": "URL for the link",
+                                                                "type": "string",
+                                                                "format": "uri",
+                                                                "example": "http://example.com/api/external-user-types?page=1"
+                                                            },
+                                                            "label": {
+                                                                "description": "Label for the link, e.g., page number or a special label",
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "active": {
+                                                                "description": "Whether the link is active for the current page",
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/external-user-types?page=2"
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/external-user-types"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tipos de usuarios externos recuperados (con paginación) correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "tipos-usuarios-externos"
+                ],
+                "summary": "Crea un tipo de usuario externo",
+                "operationId": "external-user-types-create",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Otro"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tipo de usuario externo creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "role": {
+                                                    "$ref": "#/components/schemas/ExternalUserType"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Tipo de usuario externo creado correctamente"
+                                                },
+                                                "code": {
+                                                    "type": "integer",
+                                                    "example": 201
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error en los campos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "errors": {
+                                                    "type": "object"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Error en los campos"
+                                                },
+                                                "code": {
+                                                    "type": "integer",
+                                                    "example": 400
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/external-user-types/{id}": {
+            "get": {
+                "tags": [
+                    "tipos-usuarios-externos"
+                ],
+                "summary": "Obtiene un tipo de usuario externo",
+                "operationId": "external-user-types-retrieved",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tipo de usuario externo recuperado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "externalUserType": {
+                                                    "$ref": "#/components/schemas/ExternalUserType"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tipo de usuario externo recuperado correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tipo de usuario externo no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tipo de usuario externo no encontrado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "tipos-usuarios-externos"
+                ],
+                "summary": "Actualiza un tipo de usuario externo",
+                "operationId": "external-user-types-update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Proveedor"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tipo de usuario externo actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "externalUserType": {
+                                                    "$ref": "#/components/schemas/ExternalUserType"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tipo de usuario externo actualizado correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tipo de usuario externo no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tipo de usuario externo no encontrado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "tipos-usuarios-externos"
+                ],
+                "summary": "Desactiva un tipo de usuario externo",
+                "operationId": "external-user-types-deactivate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tipo de usuario externo desactivado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tipo de usuario externo desactivado correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tipo de usuario externo no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tipo de usuario externo no encontrado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "El tipo de usuario externo ya está desactivado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El tipo de usuario externo ya está desactivado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 409
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "tipos-usuarios-externos"
+                ],
+                "summary": "Activa un tipo de usuario externo",
+                "operationId": "external-user-types-activate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tipo de usuario externo activado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tipo de usuario externo activado correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tipo de usuario externo no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tipo de usuario externo no encontrado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "El tipo de usuario externo ya está desactivado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El tipo de usuario externo ya está desactivado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 409
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/roles": {
+            "get": {
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Obtiene una lista paginada de roles",
+                "operationId": "roles-all-retrieved",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Número de roles por página.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "searchBy",
+                        "in": "query",
+                        "description": "Campo por el que se realizará la búsqueda (por ejemplo, 'name' o 'id').",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "name"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Texto de búsqueda.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Admin"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "Campo por el que se realizará la ordenación (por ejemplo, 'name' o 'id').",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "name"
+                        }
+                    },
+                    {
+                        "name": "sortDirection",
+                        "in": "query",
+                        "description": "Dirección de la ordenación, puede ser 'asc' o 'desc'.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Roles recuperados (con paginación) correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Role"
+                                                    }
+                                                },
+                                                "first_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/roles?page=1"
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "last_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/roles?page=10"
+                                                },
+                                                "link": {
+                                                    "description": "Pagination links including previous, next, and page numbers",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url": {
+                                                                "description": "URL for the link",
+                                                                "type": "string",
+                                                                "format": "uri",
+                                                                "example": "http://example.com/api/roles?page=1"
+                                                            },
+                                                            "label": {
+                                                                "description": "Label for the link, e.g., page number or a special label",
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "active": {
+                                                                "description": "Whether the link is active for the current page",
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/roles?page=2"
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/roles"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Roles recuperados (con paginación) correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Crea un rol",
+                "operationId": "roles-create",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Director Marca Propia"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Director Marca Propia"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rol creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "role": {
+                                                    "$ref": "#/components/schemas/Role"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Rol creado correctamente"
+                                                },
+                                                "code": {
+                                                    "type": "integer",
+                                                    "example": 201
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error en los campos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "errors": {
+                                                    "type": "object"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Error en los campos"
+                                                },
+                                                "code": {
+                                                    "type": "integer",
+                                                    "example": 400
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/roles/{id}": {
+            "get": {
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Obtiene un rol",
+                "operationId": "roles-retrieved",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rol recuperado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "role": {
+                                                    "$ref": "#/components/schemas/Role"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol recuperado correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rol no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol no encontrado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Actualiza un rol",
+                "operationId": "roles-update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Director Marca Propia"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Director Marca Propia"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rol actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "role": {
+                                                    "$ref": "#/components/schemas/Role"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol actualizado correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rol no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol no encontrado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Desactiva un rol",
+                "operationId": "roles-deactivate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rol desactivado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol desactivado correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rol no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol no encontrado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "El rol ya está desactivado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El rol ya está desactivado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 409
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Activa un rol",
+                "operationId": "roles-activate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rol activado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol activado correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rol no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rol no encontrado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "El rol ya está activado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El rol ya está activado"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 409
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/subdivisions": {
+            "get": {
+                "tags": [
+                    "subdivisiones"
+                ],
+                "summary": "Obtiene una lista paginada de subdivisiones",
+                "operationId": "subdivisions-all-retrieved",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Número de subdivisiones por página.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "searchBy",
+                        "in": "query",
+                        "description": "Campo por el que se realizará la búsqueda (por ejemplo, 'name' o 'id').",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "name"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Texto de búsqueda.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Division A"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "Campo por el que se realizará la ordenación (por ejemplo, 'name' o 'id').",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "name"
+                        }
+                    },
+                    {
+                        "name": "sortDirection",
+                        "in": "query",
+                        "description": "Dirección de la ordenación, puede ser 'asc' o 'desc'.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Subdivisiones recuperadas (con paginación) correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Subdivision"
+                                                    }
+                                                },
+                                                "first_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/subdivisions?page=1"
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "last_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/subdivisions?page=10"
+                                                },
+                                                "link": {
+                                                    "description": "Pagination links including previous, next, and page numbers",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url": {
+                                                                "description": "URL for the link",
+                                                                "type": "string",
+                                                                "format": "uri",
+                                                                "example": "http://example.com/api/subdivisions?page=1"
+                                                            },
+                                                            "label": {
+                                                                "description": "Label for the link, e.g., page number or a special label",
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "active": {
+                                                                "description": "Whether the link is active for the current page",
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/subdivisions?page=2"
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/subdivisions"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Subdivisiones recuperadas (con paginación) correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/subdivisions/{id}": {
+            "get": {
+                "tags": [
+                    "subdivisiones"
+                ],
+                "summary": "Obtiene una subdivisión",
+                "operationId": "subdivisions-retrieved",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Subdivisión recuperada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "subdivision": {
+                                                    "$ref": "#/components/schemas/Subdivision"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Subdivisión recuperada correctamente"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Subdivisión no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Subdivisión no encontrada"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Area": {
+                "required": [
+                    "name",
+                    "description",
+                    "active"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Marketing"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Department responsible for marketing strategies"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-07-21 14:00:00.0000"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-07-21 14:00:00.0000"
+                    }
+                },
+                "type": "object"
+            },
+            "ExternalUserType": {
+                "required": [
+                    "name",
+                    "active"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Laboratorio"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-07-21 14:00:00.0000"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-07-21 14:00:00.0000"
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null
+                    }
+                },
+                "type": "object"
+            },
+            "Role": {
+                "required": [
+                    "name",
+                    "description",
+                    "active"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Admin"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Administrator role with full permissions"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-07-21 14:00:00.0000"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-07-21 14:00:00.0000"
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null
+                    }
+                },
+                "type": "object"
+            },
+            "Subdivision": {
+                "required": [
+                    "name",
+                    "description",
+                    "active"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Division A"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Descripción de la división A"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T00:00:00.0000"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-02T00:00:00.0000"
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "user_type",
+                    "active"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "john.doe@example.com"
+                    },
+                    "user_type": {
+                        "type": "string",
+                        "example": "admin"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T00:00:00.0000"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-02T00:00:00.0000"
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null
+                    }
+                },
+                "type": "object"
             }
         }
     }

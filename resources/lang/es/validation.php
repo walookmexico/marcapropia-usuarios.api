@@ -174,7 +174,7 @@ return [
         'fullName' => 'nombre completo',
         'email' => 'correo electrónico',
         'password' => 'contraseña',
-        'areaCode' => 'código de área',
+        'areaCode' => 'lada',
         'phone' => 'número de teléfono',
         'job' => 'puesto',
         'employeeCode' => 'código de empleado',

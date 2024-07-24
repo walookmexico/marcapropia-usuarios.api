@@ -10,5 +10,5 @@ return [
     'external_user_type_already_deactivated' => 'El tipo de usuario externo ya está desactivado',
     'external_user_type_already_activated' => 'El tipo de usuario externo ya está activado',
     'external_user_type_retrieved' => 'Tipo de usuario externo recuperado correctamente',
-    'external_user_types_retrieved' => 'Tipo de usuario externoes recuperados (con paginación) correctamente',
+    'external_user_types_retrieved' => 'Tipos de usuarios externos recuperados (con paginación) correctamente',
 ];
