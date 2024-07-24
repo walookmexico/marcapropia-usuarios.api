@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\HasCustomTimestampsTrait;
-use Faker\Provider\en_AU\PhoneNumber;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -14,6 +13,21 @@ use Laravel\Lumen\Auth\Authorizable;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * @OA\Schema(
+ *     schema="User",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="John Doe"),
+ *     @OA\Property(property="email", type="string", example="john.doe@example.com"),
+ *     @OA\Property(property="user_type", type="string", example="admin"),
+ *     @OA\Property(property="active", type="boolean", example=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2024-01-01T00:00:00.0000"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-01-02T00:00:00.0000"),
+ *     @OA\Property(property="deleted_at", type="string", format="date-time", example=null),
+ *     required={"name", "email", "password", "user_type", "active"}
+ * )
+ */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
     use Authenticatable, Authorizable, HasFactory, HasRoles, HasCustomTimestampsTrait, SoftDeletes;
