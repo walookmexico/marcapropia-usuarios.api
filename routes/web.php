@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProjectController;
-
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 /*
@@ -27,13 +25,37 @@ $router->get('/api/documentation', function () {
 //$router->get('/login', 'AuthController@redirectToProvider');
 //$router->get('/callback', 'AuthController@handleProviderCallback');
 
-$router->group(['prefix' => 'api'], function () use ($router) {
+$router->group(['prefix' => 'api', 'middleware' => 'setlocale'], function () use ($router) {
+    $router->get('/users', 'AuthController@getAllUser');
+    $router->get('/users/me', 'AuthController@me');
+    $router->get('/users/{id}', 'AuthController@getUser');
     $router->post('/users/register', 'AuthController@register');
+    $router->put('/users/{id}', 'AuthController@updateUser');
+    $router->delete('/users/{id}', 'AuthController@deactivateUser');
+    $router->patch('/users/{id}', 'AuthController@activateUser');
     $router->post('/users/login', 'AuthController@login');
     $router->post('/users/logout', 'AuthController@logout');
-
     $router->post('/users/refresh', 'AuthController@refreshToken');
-    $router->get('/users/me', 'AuthController@me');
+
+    $router->get('/roles', 'RoleController@getAllRole');
+    $router->get('/roles/{id}', 'RoleController@getRole');
+    $router->post('/roles', 'RoleController@createRole');
+    $router->put('/roles/{id}', 'RoleController@updateRole');
+    $router->delete('/roles/{id}', 'RoleController@deactivateRole');
+    $router->patch('/roles/{id}', 'RoleController@activateRole');
+
+    $router->get('/external-user-types', 'ExternalUserTypeController@getAllExternalUserType');
+    $router->get('/external-user-types/{id}', 'ExternalUserTypeController@getExternalUserType');
+    $router->post('/external-user-types', 'ExternalUserTypeController@createExternalUserType');
+    $router->put('/external-user-types/{id}', 'ExternalUserTypeController@updateExternalUserType');
+    $router->delete('/external-user-types/{id}', 'ExternalUserTypeController@deactivateExternalUserType');
+    $router->patch('/external-user-types/{id}', 'ExternalUserTypeController@activateExternalUserType');
+
+    $router->get('/areas', 'AreaController@getAllArea');
+    $router->get('/areas/{id}', 'AreaController@getArea');
+
+    $router->get('/subdivisions', 'SubdivisionController@getAllSubdivision');
+    $router->get('/subdivisions/{id}', 'SubdivisionController@getSubdivision');
 });
 
-$router->post('/role','RoleController@createRole');
+

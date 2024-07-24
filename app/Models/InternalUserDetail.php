@@ -11,6 +11,7 @@ class InternalUserDetail extends Model{
 
     protected $table = "internal_user_details";
     protected $primaryKey = 'user_id';
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     protected $fillable = [
         'employee_code'

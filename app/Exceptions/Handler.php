@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
+use PDOException;
+use ErrorException;
+use Spatie\Permission\Exceptions\RoleAlreadyExists;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -59,32 +62,40 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof NotFoundHttpException) {
-            return $this->error('Route not found', [], Response::HTTP_NOT_FOUND);
+            return $this->error(trans('exception.not_found'), [], Response::HTTP_NOT_FOUND);
         }
 
         if ($exception instanceof MethodNotAllowedHttpException) {
-            return $this->error('Method not allowed', [], Response::HTTP_METHOD_NOT_ALLOWED);
+            return $this->error(trans('exception.method_not_allowed'), [], Response::HTTP_METHOD_NOT_ALLOWED);
         }
-        
+
         if ($exception instanceof ValidationException) {
             $errors = $exception->validator->errors()->getMessages();
-            return $this->error('Error on fields', ['errors' => $errors], Response::HTTP_BAD_REQUEST);
+            return $this->error(trans('exception.validation_error'), ['errors' => $errors], Response::HTTP_BAD_REQUEST);
         }
 
         if ($exception instanceof TokenExpiredException) {
-            return $this->error('Token expired', [], Response::HTTP_UNAUTHORIZED);
+            return $this->error(trans('token.token_expired'), [], Response::HTTP_UNAUTHORIZED);
         }
 
         if ($exception instanceof TokenInvalidException) {
-            return $this->error('Token invalid', [], Response::HTTP_UNAUTHORIZED);
+            return $this->error(trans('token.token_invalid'), [], Response::HTTP_UNAUTHORIZED);
         }
 
         if ($exception instanceof JWTException) {
-            return $this->error('Token absent', [], Response::HTTP_UNAUTHORIZED);
+            return $this->error(trans('token.token_absent'), [], Response::HTTP_UNAUTHORIZED);
         }
 
-        if ($exception instanceof \ErrorException) {
-            return $this->error('An unexpected error occurred on the server. Please try again later or contact support if the problem persists.', [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        if ($exception instanceof ErrorException) {
+            return $this->error(trans('exception.unexpected_error'), [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        if ($exception instanceof PDOException) {
+            return $this->error(trans('exception.unexpected_error'), [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        if ($exception instanceof RoleAlreadyExists) {
+            return $this->error(trans('role.role_already_exists'), [], Response::HTTP_FORBIDDEN);
         }
 
         return parent::render($request, $exception);
