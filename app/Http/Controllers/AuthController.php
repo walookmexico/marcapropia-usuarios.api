@@ -49,15 +49,22 @@ class AuthController extends BaseController
         $registerUserRequest->validate($request);
 
         $user = $this->userService->registerUser($request->all());
-       
-        $token = JWTAuth::fromUser($user);
-        $expiresIn = auth('api')->factory()->getTTL() * 60;
-        $refreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user); 
 
-        return $this->success(trans('user.user_created'), 
+        $token = JWTAuth::claims([
+            'iss' => env('JWT_ISS'), // Establecer el emisor (Issuer) para el token de acceso
+            'aud' => env('JWT_AUD'), // Establecer el receptor (Audience) para el token de acceso
+        ])->fromUser($user);
+        $expiresIn = auth('api')->factory()->getTTL() * 60;
+        $refreshToken = JWTAuth::claims([
+            'type' => 'refresh',
+            'iss' => env('JWT_ISS'), // Establecer el emisor (Issuer) para el token de acceso
+            'aud' => env('JWT_AUD'), // Establecer el receptor (Audience) para el token de acceso
+        ])->fromUser($user);
+
+        return $this->success(trans('user.user_created'),
         [
             'refresh_token' => $refreshToken,
-            'token' => $token, 
+            'token' => $token,
             'expires_in' => $expiresIn,
             'token_type' => 'bearer',
             'user' => $user,
@@ -83,7 +90,10 @@ class AuthController extends BaseController
     {
         $credentials = $request->only('email', 'password');
 
-        if (!$token = JWTAuth::attempt($credentials)) {
+        if (!$token = JWTAuth::claims([
+            'iss' => env('JWT_ISS'), // Establecer el emisor (Issuer) para el token de acceso
+            'aud' => env('JWT_AUD'), // Establecer el receptor (Audience) para el token de acceso
+        ])->attempt($credentials)) {
             return $this->error(trans('user.invalid_credentials'), [], Response::HTTP_UNAUTHORIZED);
         }
 
@@ -92,16 +102,20 @@ class AuthController extends BaseController
             return $this->error(trans('user.user_already_deactivated'), [], Response::HTTP_FORBIDDEN);
         }
 
-        $refreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user);
+        $refreshToken = JWTAuth::claims([
+            'type' => 'refresh',
+            'iss' => env('JWT_ISS'), // Establecer el emisor (Issuer) para el token de acceso
+            'aud' => env('JWT_AUD'), // Establecer el receptor (Audience) para el token de acceso
+        ])->fromUser($user);
         $expiresIn = auth('api')->factory()->getTTL() * 60;
 
-        return $this->success(trans('user.user_logged_in'), 
+        return $this->success(trans('user.user_logged_in'),
             [
                 'refresh_token' => $refreshToken,
-                'token' => $token, 
+                'token' => $token,
                 'expires_in' => $expiresIn,
                 'token_type' => 'bearer'
-            ]);      
+            ]);
     }
 
     /**
@@ -114,7 +128,7 @@ class AuthController extends BaseController
     public function logout(){
         JWTAuth::parseToken()->authenticate();
         JWTAuth::invalidate(JWTAuth::getToken());
-        return $this->success(trans('user.user_logged_out'), []);     
+        return $this->success(trans('user.user_logged_out'), []);
     }
 
     /**
@@ -140,18 +154,25 @@ class AuthController extends BaseController
      *     @OA\Response(response="200", description="Token refreshed successfully")
      * )
      */
-    public function refreshToken(){ 
+    public function refreshToken(){
 
         $user = JWTAuth::parseToken()->authenticate();
         $refreshToken = JWTAuth::getToken();
-        $newToken = JWTAuth::refresh($refreshToken);
-        $newRefreshToken = JWTAuth::claims(['type' => 'refresh'])->fromUser($user);
+        $newToken = JWTAuth::claims([
+            'iss' => env('JWT_ISS'), // Establecer el emisor (Issuer) para el token de acceso
+            'aud' => env('JWT_AUD'), // Establecer el receptor (Audience) para el token de acceso
+        ])->refresh($refreshToken);
+        $newRefreshToken = JWTAuth::claims([
+            'type' => 'refresh',
+            'iss' => env('JWT_ISS'), // Establecer el emisor (Issuer) para el token de acceso
+            'aud' => env('JWT_AUD'), // Establecer el receptor (Audience) para el token de acceso
+        ])->fromUser($user);
         $newExpiresIn = auth('api')->factory()->getTTL() * 60;
 
-        return $this->success(trans('token.token_refreshed'), 
+        return $this->success(trans('token.token_refreshed'),
             [
                 'refresh_token' => $newRefreshToken,
-                'token' => $newToken, 
+                'token' => $newToken,
                 'expires_in' => $newExpiresIn,
                 'token_type' => 'bearer',
             ]);
@@ -210,12 +231,12 @@ class AuthController extends BaseController
             }
 
             $this->userService->activateUser($id);
-            
+
             return $this->success(trans('user.user_activated'));
         } catch (ModelNotFoundException $e) {
             return $this->error(trans('user.user_not_found'), [], Response::HTTP_NOT_FOUND);
         } catch (UserActivatedException $e) {
             return $this->error(trans('user.user_already_activated'), [], Response::HTTP_CONFLICT);
         }
-    } 
+    }
 }
