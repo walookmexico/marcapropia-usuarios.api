@@ -12,39 +12,12 @@
         },
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "https://marcapropia-usuarios-dev.azurewebsites.net"
+        }
+    ],
     "paths": {
-        "/api/users/oauth/authorize": {
-            "get": {
-                "summary": "Redirect to OAuth Provider",
-                "operationId": "797efdffee8720c3f58771e6e8186197",
-                "responses": {
-                    "302": {
-                        "description": "Redirect to OAuth Provider"
-                    }
-                }
-            }
-        },
-        "/api/users/oauth/callback": {
-            "get": {
-                "summary": "Handle OAuth Callback",
-                "operationId": "9decefc620349d12a3a4ab9ef2fef1f0",
-                "parameters": [
-                    {
-                        "name": "code",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OAuth Token Response"
-                    }
-                }
-            }
-        },
         "/api/users/register": {
             "post": {
                 "summary": "Register a new user",
@@ -62,6 +35,10 @@
                                         "type": "string"
                                     },
                                     "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
                                         "type": "string",
                                         "format": "password"
                                     }

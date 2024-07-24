@@ -36,7 +36,7 @@ class AuthController extends BaseController
      *         @OA\JsonContent(
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="email", type="string"),
-     *             @OA\Property(property="password", type="string", format="password")
+     *             @OA\Property(property="password", type="string", format="password"),
      *             @OA\Property(property="password_confirmation", type="string", format="password")
      *         )
      *     ),
