@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @OA\Schema(
  *     schema="Role",
  *     type="object",
+ *     description="Schema de rol",
  *     @OA\Property(property="id", type="integer", format="int64", example=1),
  *     @OA\Property(property="name", type="string", example="Admin"),
  *     @OA\Property(property="description", type="string", example="Administrator role with full permissions"),

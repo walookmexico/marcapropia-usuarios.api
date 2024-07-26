@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @OA\Schema(
  *     schema="Area",
  *     type="object",
+ *     description="Schema de área",
  *     @OA\Property(property="id", type="integer", format="int64", example=1),
  *     @OA\Property(property="name", type="string", example="Marketing"),
  *     @OA\Property(property="description", type="string", example="Department responsible for marketing strategies"),

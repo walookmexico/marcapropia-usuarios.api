@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @OA\Schema(
  *     schema="ExternalUserType",
  *     type="object",
+ *     description="Schema de tipo de usuario externo",
  *     @OA\Property(property="id", type="integer", format="int64", example=1),
  *     @OA\Property(property="name", type="string", example="Laboratorio"),
  *     @OA\Property(property="active", type="boolean", example=true),
