@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @OA\Schema(
  *     schema="Subdivision",
  *     type="object",
+ *     description="Schema de subdivisión",
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Division A"),
  *     @OA\Property(property="description", type="string", example="Descripción de la división A"),

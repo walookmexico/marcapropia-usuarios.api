@@ -365,6 +365,52 @@ class AuthController extends BaseController
             ]);
     }
 
+     /**
+     * @OA\Get(
+     *     path="/api/users/{id}",
+     *     summary="Obtiene un usuario",
+     *     tags={"usuarios"},
+     *     operationId="users-retrieved",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Usuario recuperado correctamente",
+     *          @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="role", type="object", ref="#/components/schemas/User"),
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Usuario recuperado correctamente"),
+     *             @OA\Property(property="code", type="integer", example=200)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Usuario no encontrado",
+     *          @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="message", type="string", example="Usuario no encontrado"),
+     *             @OA\Property(property="code", type="integer", example=404)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste",
+     *          @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="message", type="string", example="Ocurrió un error inesperado en el servidor. Por favor, inténtelo de nuevo más tarde o contacte con soporte si el problema persiste"),
+     *             @OA\Property(property="code", type="integer", example=500)
+     *         )
+     *     )
+     * )
+     */
     public function getUser($id){
         try {
             $user = $this->userService->getUserWithAllRelationsById($id);

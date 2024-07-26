@@ -17,6 +17,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @OA\Schema(
  *     schema="User",
  *     type="object",
+ *     description="Schema de usuario",
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="John Doe"),
  *     @OA\Property(property="email", type="string", example="john.doe@example.com"),
