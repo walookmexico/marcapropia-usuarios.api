@@ -2948,6 +2948,7 @@
     "components": {
         "schemas": {
             "Area": {
+                "description": "Schema de área",
                 "required": [
                     "name",
                     "description",
@@ -2981,6 +2982,7 @@
                 "type": "object"
             },
             "ExternalUserType": {
+                "description": "Schema de tipo de usuario externo",
                 "required": [
                     "name",
                     "active"
@@ -3018,6 +3020,7 @@
                 "type": "object"
             },
             "Role": {
+                "description": "Schema de rol",
                 "required": [
                     "name",
                     "description",
@@ -3060,6 +3063,7 @@
                 "type": "object"
             },
             "Subdivision": {
+                "description": "Schema de subdivisión",
                 "required": [
                     "name",
                     "description",
@@ -3101,6 +3105,7 @@
                 "type": "object"
             },
             "User": {
+                "description": "Schema de usuario",
                 "required": [
                     "name",
                     "email",
