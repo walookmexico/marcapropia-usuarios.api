@@ -383,7 +383,7 @@ class AuthController extends BaseController
      *          @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="role", type="object", ref="#/components/schemas/User"),
+     *                 @OA\Property(property="user", type="object", ref="#/components/schemas/User"),
      *             ),
      *             @OA\Property(property="message", type="string", example="Usuario recuperado correctamente"),
      *             @OA\Property(property="code", type="integer", example=200)
