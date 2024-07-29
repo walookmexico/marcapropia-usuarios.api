@@ -75,10 +75,12 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
             $phoneNumber = $data['phone'];
             $areaCode = $data['areaCode'];
 
-            $user->phones()->create([
-                'phone' => $phoneNumber,
-                'area_code' => $areaCode
-            ]);
+            if(!empty(trim($phoneNumber)) && !empty(trim($areaCode))){
+                $user->phones()->create([
+                    'phone' => $phoneNumber,
+                    'area_code' => $areaCode
+                ]);
+            }
         }
     }
 
@@ -235,10 +237,12 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
             $phoneNumber = $data['phone'];
             $areaCode = $data['areaCode'];
 
-            $user->phones()->update([
-                'phone' => $phoneNumber,
-                'area_code' => $areaCode
-            ]);
+            if(!empty(trim($phoneNumber)) && !empty(trim($areaCode))){
+                $user->phones()->update([
+                    'phone' => $phoneNumber,
+                    'area_code' => $areaCode
+                ]);
+            }
         }
     }
 
