@@ -1086,7 +1086,7 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-                            "example": "Marketing"
+                            "example": "John"
                         }
                     },
                     {

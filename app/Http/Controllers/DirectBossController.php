@@ -40,7 +40,7 @@ class DirectBossController extends Controller{
      *         name="search",
      *         in="query",
      *         required=false,
-     *         @OA\Schema(type="string", example="Marketing"),
+     *         @OA\Schema(type="string", example="John"),
      *         description="Texto de búsqueda."
      *     ),
      *     @OA\Parameter(

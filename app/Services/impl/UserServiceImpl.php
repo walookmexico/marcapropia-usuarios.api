@@ -246,7 +246,6 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
         if ($searchBy && $search) {
             $query->join('users', 'users.id', '=', 'direct_bosses.user_id')
                   ->where('users.' . $searchBy, 'like', '%' . $search . '%')
-                  ->orWhere('direct_bosses.'. $searchBy, $search)
                   ->select(
                     'direct_bosses.id',
                     'direct_bosses.user_id',
@@ -255,6 +254,9 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
                     'direct_bosses.created_at',
                     'direct_bosses.updated_at',
                     'direct_bosses.deleted_at'); // Especifica los campos que deseas obtener
+            if($searchBy != 'name'){
+                $query->orWhere('direct_bosses.'. $searchBy, $search);
+            }
         } else {
             $query->join('users', 'users.id', '=', 'direct_bosses.user_id')
                   ->select(
@@ -268,7 +270,11 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
         }
 
         // Aplicar ordenamiento
-        $query->orderBy($sortBy, $sortDirection);
+        if($sortBy == 'name'){
+            $query->orderBy('users.' . $sortBy, $sortDirection);
+        }else{
+            $query->orderBy($sortBy, $sortDirection);
+        }
 
         // Obtener roles paginados
         return $query->paginate($perPage);
