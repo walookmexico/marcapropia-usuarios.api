@@ -2,6 +2,7 @@
 
 namespace App\Services\Impl;
 
+use App\Models\DirectBoss;
 use App\Models\User;
 use App\Services\Impl\AbstractBaseService;
 use App\Services\Impl\RoleServiceImpl;
@@ -223,6 +224,47 @@ class UserServiceImpl extends AbstractBaseService implements UserServiceInterfac
         if ($searchBy && $search) {
             $query->where($searchBy, 'like', '%' . $search . '%')
             ->orWhere($searchBy, $search);
+        }
+
+        // Aplicar ordenamiento
+        $query->orderBy($sortBy, $sortDirection);
+
+        // Obtener roles paginados
+        return $query->paginate($perPage);
+    }
+
+    public function getDirectBossesPaginated(int $perPage = 10, string $searchBy = null, string $search = null,
+        string $sortBy = 'name', string $sortDirection = 'asc', bool $active = true) : LengthAwarePaginator{
+        $query = DirectBoss::query();
+        $query->withTrashed();
+        if($searchBy == 'active'){
+            $active = (bool) $search;
+            $query->where('direct_bosses.active', $active); // Asegúrate de especificar el alias de la tabla si es necesario
+        }
+
+        // Aplicar filtros si existe la búsqueda
+        if ($searchBy && $search) {
+            $query->join('users', 'users.id', '=', 'direct_bosses.user_id')
+                  ->where('users.' . $searchBy, 'like', '%' . $search . '%')
+                  ->orWhere('direct_bosses.'. $searchBy, $search)
+                  ->select(
+                    'direct_bosses.id',
+                    'direct_bosses.user_id',
+                    'users.name as name',
+                    'direct_bosses.active',
+                    'direct_bosses.created_at',
+                    'direct_bosses.updated_at',
+                    'direct_bosses.deleted_at'); // Especifica los campos que deseas obtener
+        } else {
+            $query->join('users', 'users.id', '=', 'direct_bosses.user_id')
+                  ->select(
+                    'direct_bosses.id',
+                    'direct_bosses.user_id',
+                    'users.name as name',
+                    'direct_bosses.active',
+                    'direct_bosses.created_at',
+                    'direct_bosses.updated_at',
+                    'direct_bosses.deleted_at'); // Especifica los campos que deseas obtener
         }
 
         // Aplicar ordenamiento

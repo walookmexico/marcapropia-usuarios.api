@@ -27,6 +27,7 @@ $router->get('/api/documentation', function () {
 
 $router->group(['prefix' => 'api', 'middleware' => 'setlocale'], function () use ($router) {
     $router->get('/users', 'AuthController@getAllUser');
+    $router->get('/users/direct-bosses', 'DirectBossController@getAllDirectBoss');
     $router->get('/users/me', 'AuthController@me');
     $router->get('/users/{id}', 'AuthController@getUser');
     $router->post('/users/register', 'AuthController@register');

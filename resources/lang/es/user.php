@@ -14,4 +14,5 @@ return [
     'user_retrieved' => 'Usuario recuperado correctamente',
     'users_retrieved' => 'Usuarios recuperados (con paginación) correctamente',
     'invalid_credentials' => 'Credenciales inválidas',
+    'direct_bosses_retrieved' => 'Jefes directos recuperados (con paginación) correctamente'
 ];

@@ -14,4 +14,5 @@ return [
     'user_retrieved' => 'User retrieved successfully',
     'users_retrieved' => 'Users retrieved (with pagination) successfully',
     'invalid_credentials' => 'Invalid credentials',
+    'direct_bosses_retrieved' => 'Direct bosses retrieved (with pagination) successfully'
 ];
